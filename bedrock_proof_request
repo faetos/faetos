@@ -1,0 +1,221 @@
+Validating proof for a credential
+
+On the server side (the issuer or verifier of the credential)
+
+POST /present-proof/send-request
+
+need connection id to endorser:
+
+http://192.168.0.18:8001/connections?state=active&their_label=client
+
+{"results": [{"routing_state": "none", "accept": "auto", "their_did": "L4okbvqDcbAPHmirNfi9ih", "rfc23_state": "completed", "invitation_mode": "once", "state": "active", "their_role": "invitee", "connection_protocol": "connections/1.0", "their_label": "client", "connection_id": "6b8fcf03-011d-41c7-92d5-a36fccee9ed8", "alias": "omni", "my_did": "YLk1KZQsXoXyfQgeeiJBiz", "invitation_key": "DYDZkMEaB2c8LwGmf29LSrXBipJXeZJo8KRic1scuDow", "updated_at": "2021-11-12 22:31:44.552026Z", "created_at": "2021-11-12 22:31:12.291841Z"}
+
+"connection_id": "6b8fcf03-011d-41c7-92d5-a36fccee9ed8",
+
+Create the proof request:
+
+/present-proof/send-request
+
+JSON needs to look like this:
+
+
+{
+	"comment": "string",
+	"connection_id": "6b8fcf03-011d-41c7-92d5-a36fccee9ed8",
+	"proof_request": {
+		"name": "Proof request",
+		"nonce": "1234567890",
+		"requested_attributes": {
+			"additionalProp1": {
+				"name": "first_name"
+			}
+		},
+		"requested_predicates": {
+			"additionalProp2": {
+				"name": "dob",
+				"p_type": ">=",
+				"p_value": 1,
+				"restrictions": [{}]
+			}
+		},
+		"non_revoked": {
+			"to": 1632155444
+		},
+		"version": "1.0"
+	},
+	"trace": false
+}
+
+
+Success = 200 "state": "request_sent",
+
+On the Client:
+
+get the connection id:
+
+http://192.168.0.18:8001/connections?state=active&their_label=client
+
+{
+  "results": [
+    {
+      "state": "active",
+      "alias": "alamo",
+      "their_role": "inviter",
+      "invitation_mode": "once",
+      "rfc23_state": "completed",
+      "their_label": "endorser",
+      "created_at": "2021-11-12T22:31:43.810765Z",
+      "request_id": "d7fe8a58-38c0-46d7-8d15-ba7373bbcd81",
+      "invitation_key": "DYDZkMEaB2c8LwGmf29LSrXBipJXeZJo8KRic1scuDow",
+      "connection_id": "94950ea9-a8cb-4681-a383-78b919521535",
+      "connection_protocol": "connections/1.0",
+      "invitation_msg_id": "9780344d-75aa-4122-8776-3e050074e900",
+      "accept": "auto",
+      "my_did": "L4okbvqDcbAPHmirNfi9ih",
+      "updated_at": "2021-11-12T22:31:44.605089Z",
+      "routing_state": "none",
+      "their_did": "YLk1KZQsXoXyfQgeeiJBiz"
+    },
+
+"connection_id": "94950ea9-a8cb-4681-a383-78b919521535",
+
+Go find the proof request:
+
+http://192.168.0.15:8001/present-proof/records?connection_id=94950ea9-a8cb-4681-a383-78b919521535&state=request_received
+
+{
+  "results": [
+    {
+      "state": "request_received",
+      "presentation_request_dict": {
+        "@type": "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/request-presentation",
+        "@id": "7085a028-ebb1-448d-906e-1fd3c1ee2dfe",
+        "comment": "string",
+        "request_presentations~attach": [
+          {
+            "@id": "libindy-request-presentation-0",
+            "mime-type": "application/json",
+            "data": {
+              "base64": "eyJuYW1lIjogIlByb29mIHJlcXVlc3QiLCAibm9uY2UiOiAiMTIzNDU2Nzg5MCIsICJyZXF1ZXN0ZWRfYXR0cmlidXRlcyI6IHsiYWRkaXRpb25hbFByb3AxIjogeyJuYW1lIjogImZpcnN0X25hbWUifX0sICJyZXF1ZXN0ZWRfcHJlZGljYXRlcyI6IHsiYWRkaXRpb25hbFByb3AyIjogeyJuYW1lIjogImRvYiIsICJwX3R5cGUiOiAiPj0iLCAicF92YWx1ZSI6IDEsICJyZXN0cmljdGlvbnMiOiBbe31dfX0sICJub25fcmV2b2tlZCI6IHsidG8iOiAxNjMyMTU1NDQ0fSwgInZlcnNpb24iOiAiMS4wIn0="
+            }
+          }
+        ]
+      },
+      "trace": false,
+      "created_at": "2021-11-19T20:54:06.043628Z",
+      "initiator": "external",
+      "connection_id": "94950ea9-a8cb-4681-a383-78b919521535",
+      "role": "prover",
+      "thread_id": "7085a028-ebb1-448d-906e-1fd3c1ee2dfe",
+      "presentation_request": {
+        "nonce": "1234567890",
+        "name": "Proof request",
+        "version": "1.0",
+        "requested_attributes": {
+          "additionalProp1": {
+            "name": "first_name"
+          }
+        },
+        "requested_predicates": {
+          "additionalProp2": {
+            "name": "dob",
+            "p_value": 1,
+            "restrictions": [
+              {}
+            ],
+            "p_type": ">="
+          }
+        },
+        "non_revoked": {
+          "to": 1632155444
+        }
+      },
+      "presentation_exchange_id": "0f3f1392-a3c6-4db6-ac18-cb166fa40929",
+      "updated_at": "2021-11-19T20:54:06.043628Z"
+    }
+  ]
+}
+
+get credentials you need to share or prove:
+
+http://192.168.0.15:8001/credentials
+
+{"results": [{"referent": "5a55fa46-4543-4516-82e7-0b42e904aa56", "attrs": {"dob": "11152000", "last_name": "Buddy", "first_name": "Buddy"}, "schema_id": "9BfpHx9ZoGh3fhC1tn3Qy5:2:nattest:1.0", "cred_def_id": "9BfpHx9ZoGh3fhC1tn3Qy5:3:CL:859:1", "rev_reg_id": null, "cred_rev_id": null}]}
+
+grab the "referent"
+
+"referent": "5a55fa46-4543-4516-82e7-0b42e904aa56"
+
+
+get the presentation_exchange_id:
+
+"presentation_exchange_id": "0f3f1392-a3c6-4db6-ac18-cb166fa40929"
+
+Send the following JSON to the client using the above presentation_exchange_id to
+
+/present-proof/records/{pres_ex_id}/send-presentation
+
+{
+	"requested_attributes": {
+		"additionalProp1": {
+			"cred_id": "5a55fa46-4543-4516-82e7-0b42e904aa56",
+			"revealed": true
+		}
+	},
+	"requested_predicates": {
+		"additionalProp2": {
+			"cred_id": "5a55fa46-4543-4516-82e7-0b42e904aa56",
+			"timestamp": 1632155444
+		}
+	},
+	"self_attested_attributes": {},
+	"trace": false
+}
+
+
+SUCCESS = 200 
+
+{
+  "state": "presentation_sent",
+  "presentation_request_dict": {
+
+On the endorser (verifier):
+
+get the proof requests:
+
+http://192.168.0.18:8001/present-proof/records?state=presentation_received
+
+and here you can grab the data you need:
+
+        },
+        "requested_proof": {
+          "revealed_attrs": {
+            "additionalProp1": {
+              "raw": "Buddy",
+              "sub_proof_index": 0,
+              "encoded": "99779826753920859597282876630678943980655387057107947611064242118888086561366"
+            }
+          },
+          "self_attested_attrs": {},
+          "unrevealed_attrs": {},
+          "predicates": {
+            "additionalProp2": {
+              "sub_proof_index": 0
+            }
+          }
+        },
+
+get the presentation_exchange_id:
+
+"presentation_exchange_id": "ebc44cd3-570e-4691-a27c-ade20ee5e8bc"
+
+if satisfied verify the transaction:
+
+POST /present-proof​/records​/{pres_ex_id}​/verify-presentation
+
+SUCCESS = 200   
+
+},
+  "role": "verifier",
+  "auto_present": false,
+  "verified": "true",
