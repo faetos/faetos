@@ -1,0 +1,63 @@
+400
+Undocumented
+Error: Issuer has no operable cred def for proposal spec {'cred_def_id': '9BfpHx9ZoGh3fhC1tn3Qy5:3:CL:816:1', 'issuer_did': '9BfpHx9ZoGh3fhC1tn3Qy5', 'schema_id': '9BfpHx9ZoGh3fhC1tn3Qy5:2:natstest:1.0', 'schema_issuer_did': '9BfpHx9ZoGh3fhC1tn3Qy5', 'schema_name': 'natstest', 'schema_version': '1.0'}.
+
+403
+Undocumented
+Error: Endorser Info is not set up in connection metadata for this connection record
+
+Steps to success on aca-py
+
+Author must put metadata in the connection:
+
+connections/{con_id}/metadata
+
+{
+  "metadata": {
+ "endorser_info":
+{
+"endorser_did": "9BfpHx9ZoGh3fhC1tn3Qy5"
+
+},
+"use_public_did": "9BfpHx9ZoGh3fhC1tn3Qy5"
+}
+}
+
+Both Author and Endorser must have public DIDs
+
+POST /wallet/did/public
+
+Send cred def from author to endorser
+
+Endorser must endorse the transaction then write it to the ledger
+
+{
+	"auto_remove": true,
+	"comment": "string",
+	"connection_id": "94950ea9-a8cb-4681-a383-78b919521535",
+	"credential_preview": {
+		"@type": "issue-credential/2.0/credential-preview",
+		"attributes": [{
+		
+				"name": "name",
+				"value": "Buddy"
+			},
+			{
+			
+				"name": "date",
+				"value": "11152021"
+			}
+		]
+	},
+	"filter": {
+		"indy": {
+			"cred_def_id": "9BfpHx9ZoGh3fhC1tn3Qy5:3:CL:816:3",
+			"issuer_did": "9BfpHx9ZoGh3fhC1tn3Qy5",
+			"schema_id": "9BfpHx9ZoGh3fhC1tn3Qy5:2:natstest:1.0",
+			"schema_issuer_did": "9BfpHx9ZoGh3fhC1tn3Qy5",
+			"schema_name": "natstest",
+			"schema_version": "1.0"
+		}
+	},
+	"trace": true
+}
