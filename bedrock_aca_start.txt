@@ -1,0 +1,21 @@
+client:
+
+#!/bin/bash
+
+aca-py start -l client --inbound-transport http 192.168.0.15 8000 --outbound-transport http  -e "http://192.168.0.15:8000" --wallet-type indy --wallet-name "devwal" --wallet-key "testkey" --ledger-pool-name testnet --genesis-file "/home/faetos/bedrock/bbupool" --admin 192.168.0.15 8001 --admin-insecure-mode  --auto-accept-invites --auto-accept-requests --auto-respond-messages --auto-store-credential --log-file "/home/faetos/bedrock/aca.log" --auto-ping-connection --log-level info 
+
+author:
+
+#!/bin/bash
+
+aca-py start -l author --inbound-transport http 192.168.0.14 8000 --outbound-transport http  -e "http://192.168.0.14:8000" --wallet-type indy --wallet-name "devwal" --wallet-key "testkey" --ledger-pool-name testnet --genesis-file "/home/faetos/bedrock/bbupool" --admin 192.168.0.14 8001 --admin-insecure-mode  --auto-request-endorsement --auto-accept-invites --auto-accept-requests --auto-respond-messages --auto-store-credential --log-file "/home/faetos/bedrock/aca.log" --auto-ping-connection --log-level info --endorser-protocol-role "author" --endorser-public-did "9BfpHx9ZoGh3fhC1tn3Qy5" --endorser-alias omni --plugin acapy_plugin_toolbox \
+    --connections-invite --invite-label "My agent admin connection" \
+	--invite-metadata-json '{"group": "admin"}'
+
+endorser:
+
+#!/bin/bash
+
+aca-py start -l endorser --inbound-transport http 192.168.0.18 8000 --outbound-transport http  -e "http://192.168.0.18:8000" --wallet-type indy --wallet-name "devwal" --wallet-key "testkey" --ledger-pool-name testnet --genesis-file "/home/faetos/bedrock/bbupool" --admin 192.168.0.18 8001 --admin-insecure-mode  --auto-accept-invites --auto-accept-requests --auto-respond-messages --auto-store-credential --log-file "/home/faetos/bedrock/aca.log" --auto-ping-connection --log-level info --endorser-protocol-role "endorser" --plugin acapy_plugin_toolbox \
+    --connections-invite --invite-label "My agent admin connection" \
+	--invite-metadata-json '{"group": "admin"}'
